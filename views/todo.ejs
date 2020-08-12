@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>To do app</title>
+    <link href="/assets/styles.css" rel="stylesheet" type="text/css">
+
+</head>
+<body>
+    <h1>My todo list</h1>
+    <div id="todo-table">
+        
+        <form action="/" method="POST">
+            <input type="text" name="item" placeholder="Add new item..." required>
+            <button type="submit">Add item</button>
+        </form>
+        <ul>
+            <% todoData.forEach(value =>{ %>
+                <li><%- value %></li>
+
+            <% }) %>
+        </ul>
+    </div>
+    <script>
+
+        var todoElement = document.querySelectorAll("li");
+        todoElement.forEach(item => {
+            item.addEventListener('click', () => {
+                removeElement(item.textContent);
+            })        
+        })
+
+        function removeElement(item) {
+            var dato = {value: item};
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function() {
+                if (this.readyState == 4 && this.status == 200) {
+                    console.log(this.response);
+                }
+            };
+            xhttp.open("DELETE", "/assets/todoList.json");
+            xhttp.setRequestHeader('Content-Type', 'application/json;charset=UTF-8')
+            xhttp.send("{oggetto: { name:"+ item+"}}");
+
+        }
+            
+    </script>
+</body>
+</html>
