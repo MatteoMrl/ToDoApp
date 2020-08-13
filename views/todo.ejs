@@ -13,12 +13,11 @@
         
         <form action="/" method="POST">
             <input type="text" name="item" placeholder="Add new item..." required>
-            <button type="submit">Add item</button>
+            <button>Add item</button>
         </form>
         <ul>
             <% todoData.forEach(value =>{ %>
                 <li><%- value %></li>
-
             <% }) %>
         </ul>
     </div>
