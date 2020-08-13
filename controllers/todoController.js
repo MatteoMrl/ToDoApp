@@ -1,4 +1,10 @@
-module.exports = function(app,fs,urlencodeParser,todoUrl){
+module.exports = function(app,fs,todoUrl,bodyParser){
+    
+    app.use(bodyParser.urlencoded({ extended: false }))
+ 
+    // parse application/json
+    app.use(bodyParser.json())
+
 
     var readData = fs.readFileSync( todoUrl, "utf8" ); //{ "todo": ["...","..."]}
     var todoList = JSON.parse(readData); //{ todo: ["...","..."] }
@@ -7,9 +13,9 @@ module.exports = function(app,fs,urlencodeParser,todoUrl){
         res.render("todo", {todoData: todoList.todo});
     })
 
-    app.post("/", urlencodeParser,(req,res)=>{                          //if the user wants to create a new data
+    app.post("/",(req,res)=>{                          //if the user wants to create a new data
         todoList.todo.push(req.body.item);                              //push the new user's item into the todo's array
-        fs.writeFile(todoUrl, JSON.stringify(todoList), function (err,data) {               //write the new json todo
+        fs.writeFile(todoUrl, JSON.stringify(todoList), (err) => {               //write the new json todo
             if (err) {
                 return console.log(err);
             }
@@ -19,7 +25,18 @@ module.exports = function(app,fs,urlencodeParser,todoUrl){
     //
     //if the user wants to delete a data
     app.delete("/assets/todoList.json", (req,res)=>{
-        console.log(req.body.data);
+        let objectToDelete = req.body.item;
+        todoList.todo.forEach((element) => {
+            if (element === objectToDelete){
+                todoList.todo.splice(element, 1);
+                fs.writeFile(todoUrl, JSON.stringify(todoList), (err) => {               //write the new json todo
+                    if (err) {
+                        return console.log(err);
+                    }
+                });
+            }
+        });
+        console.log(todoList);
         res.end();
     })
 };
